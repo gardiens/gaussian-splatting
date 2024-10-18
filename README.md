@@ -30,6 +30,21 @@ Abstract: *Radiance Field methods have recently revolutionized novel-view synthe
 </section>
 
 
+TO RUN 
+ python convert.py -s data/autos/  --colmap_executable C:/Users/lix/Documents/Centrale/3A/MVA/GDA/projet/colmap/colmap.bat
+FOR THE VIEWER SEE ONLINE 
+
+step 1 : run ffmpeg :
+FFMPEG -i {path to video} -qscale:v 1 -qmin 1 -vf fps=5 %04d.jpg
+
+data_path="data/autos/" 
+ python convert.py -s ${data_path}  --colmap_executable C:/Users/lix/Documents/Centrale/3A/MVA/GDA/projet/colmap/colmap.bat
+PUNT IN INPUT NOT README!!
+
+train 
+python train.py
+python train.py -s ${data_path}
+
 ## Funding and Acknowledgments
 
 This research was funded by the ERC Advanced grant FUNGRAPH No 788065. The authors are grateful to Adobe for generous donations, the OPAL infrastructure from Université Côte d’Azur and for the HPC resources from GENCI–IDRIS (Grant 2022-AD011013409). The authors thank the anonymous reviewers for their valuable feedback, P. Hedman and A. Tewari for proofreading earlier drafts also T. Müller, A. Yu and S. Fridovich-Keil for helping with the comparisons.

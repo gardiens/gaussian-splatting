@@ -25,8 +25,15 @@ from arguments import ModelParams, PipelineParams, OptimizationParams
 try:
     from torch.utils.tensorboard import SummaryWriter
     TENSORBOARD_FOUND = True
+    #!
 except ImportError:
     TENSORBOARD_FOUND = False
+try:
+    from clearml import Task
+    CLEARML_FOUND=True
+except ImportError:
+    CLEARML_FOUND=False
+
 
 def training(dataset, opt, pipe, testing_iterations, saving_iterations, checkpoint_iterations, checkpoint, debug_from):
     first_iter = 0
@@ -137,7 +144,10 @@ def prepare_output_and_logger(args):
             unique_str=os.getenv('OAR_JOB_ID')
         else:
             unique_str = str(uuid.uuid4())
-        args.model_path = os.path.join("./output/", unique_str[0:10])
+        subdir=os.path.join(
+            args.source_path.split("/")[-1],unique_str[0:10]
+        ) 
+        args.model_path = os.path.join("./output/",subdir)
         
     # Set up output folder
     print("Output folder: {}".format(args.model_path))
@@ -207,9 +217,12 @@ if __name__ == "__main__":
     parser.add_argument("--start_checkpoint", type=str, default = None)
     args = parser.parse_args(sys.argv[1:])
     args.save_iterations.append(args.iterations)
-    
-    print("Optimizing " + args.model_path)
+    if CLEARML_FOUND:
+        from clearml_utils.clearml import safe_init_clearml
 
+        task=safe_init_clearml(project_name="3GS",task_name= args.source_path.split("/")[-1])
+
+    print("Optimizing " + args.model_path)
     # Initialize system state (RNG)
     safe_state(args.quiet)
 
